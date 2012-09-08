@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Mi colección de enlaces</title>
+	<style type="text/css">
+		body {
+			background: #FAFAFA;
+		}
+		div {
+			border-bottom: 1px dashed red;
+		}
+		h1 {
+			color: #fff;
+			font-size: 3em;
+			text-align: center;
+			text-shadow:0 0 15px #000;
+		}
+		h2 a {
+			background: #F2F2F2;
+			border:1px solid #D8D8D8;
+			border-radius: 5px;
+			color: #0080FF;
+			display: block;
+			padding: 10px;
+			text-decoration: none;
+		}
+		h2 a:hover {
+			color: #FE642E;
+		}
+		#contenedor {
+			background: #fff;
+			border:1px solid #666;
+			border-radius: 10px;
+			color: #666;
+			font-family: Arial, sans-serif;
+			font-size: .9em;
+			margin: 0 auto;
+			padding: 10px;
+			text-align: justify;
+			width: 70%;
+		}
+		.fecha {
+			color: #000;
+			font-weight: bold;
+		}
+		.fecha:hover {
+			text-decoration: underline;
+		}
+	</style>
+</head>
+<body>
+	<div id="contenedor">
+		<header>
+			<h1>Colección de enlaces</h1>
+		</header>
+
+		<section>
+			{% for enlace in enlaces %}
+				<div>
+					<h2><a target="_blank" href="{{ enlace.url }}">{{ enlace.nombre }}</a></h2>
+					<p><img src="{{ MEDIA_URL }}{{ enlace.imagen }}" alt="{{ enlace.imagen }}"></p>
+					<p>{{ enlace.descripcion|linebreaks }}</p>
+					<p class="fecha" title="{{ enlace.fecha }}">Publicado hace {{ enlace.fecha|timesince }}</p>
+				</div>
+			{% endfor %}
+		</section>	
+	</div>	
+</body>
+</html>

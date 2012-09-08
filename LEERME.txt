@@ -1,0 +1,77 @@
+Datos para entrar al sitio de administración:
+Usuario: neo
+Contraseña: nomelase
+
+No poner atención al CSS: Archivo index.html linea 6 hasta 50
+----------------------------------------------------------------------------------------------------------------------
+CORRECCION DE ERRORES Y NUEVAS CARACTERISTICAS
+
+El error visto en clase era causado por una coma (,) de más en el archivo
+settings.py linea 51:
+ 
+	MEDIA_ROOT = os.path.join(RUTA_PROYECTO, "uploads"),
+
+Al ser un valor que se esta almacenando en la variable MEDIA_ROOT no debe
+llevar la coma al final, por lo tanto la línea quedó así:
+
+	MEDIA_ROOT = os.path.join(RUTA_PROYECTO, "uploads")
+
+----------------------------------------------------------------------------------------------------------------------
+
+NUEVAS CARACTERISTICAS QUE FORMAN PARTE DEL TERCER PARCIAL
+
+Almacenar la ruta del proyecto en una variable
+	- RUTA_PROYECTO = os.path.dirname(os.path.realpath(__file__))
+	- Archivo settings.py linea 3
+
+Definir los valores de MEDIA_ROOT y MEDIA_URL para subir imagenes
+	- MEDIA_ROOT = os.path.join(RUTA_PROYECTO, "uploads")
+	- MEDIA_URL = 'http://127.0.0.1:8000/media/'
+	- Archivo settings.py linea 51 y 56
+
+Cambia la forma de definir la ruta de las plantillas
+	- os.path.join(RUTA_PROYECTO, "templates"),
+	- Archivo settings.py linea 109
+
+Importar las configuraciones de settings.py en el archivo urls.py
+	- from django.conf import settings
+	- Linea 5
+
+Agregar la url para encontrar las imagenes subidas
+	- url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
+	- Archivo urls.py linea 18
+
+Crear la carpeta "uploads" dentro de la carpeta del proyecto
+	- Dentro de la carpeta "uploads" crear la carpeta "imagenes"
+
+Se agregó el campo imagen en el modelo Enlace
+	- imagen = models.ImageField(upload_to='imagenes', verbose_name='Subir imagen', blank=True)
+	- upload_to: Para indicar a que carpeta subir las imagenes
+	- verbose_name: Para definirle una etiqueta que se verá en el sitio de administracion
+	- blank=True: Hace que no sea obligatorio agregar una imagen
+	- Archivo models.py linea 9
+
+Se importó RequestContext en el archivo views.py
+	- from django.template import RequestContext
+	- Linea 2
+
+Se agregó RequestContext como un tercer parámetro de render_to_response
+	- return render_to_response('index.html', {'enlaces': enlaces}, context_instance=RequestContext(request))
+	- Archivo views.py linea 7
+	- Se agregó como tercer parametro porque RequestContext lleva internamente la información de la ruta donde se subieron las imagenes
+
+Se agregá la imágen en el archivo index.html con la etiqueta <img src="">
+	- <img src="{{ MEDIA_URL }}{{ enlace.imagen }}" alt="{{ enlace.imagen }}">
+	- {{ MEDIA_URL }} es la ruta donde estan las imagenes
+	- { enlace.imagen }} es el nombre de la imagen
+	- La ruta + el nombre permite que la imagen se vea
+	- alt="{{ enlace.imagen }}" sirve para mostrar el nombre de la imagen en caso de que la imagen no cargue
+ 	- Linea 26
+
+Se agregó un filtro a la etiqueta que muestra la fecha
+	- Publicado hace {{ enlace.fecha|timesince }}
+	- |timesince es el filtro que convierte una fecha ordinaria en tiempo desde la publicación
+
+Se agregó un filtro a la etiqueta que muestra la descripcion
+	- {{ enlace.descripcion|linebreaks }}
+	- |linebreaks es el filtro que permite que en index.html se muestren los espacios dejados con ENTER en el sitio de administracion
